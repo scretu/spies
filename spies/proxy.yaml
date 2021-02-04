@@ -1,0 +1,24 @@
+proxy:
+  listen:
+    # preferably listen on all interfaces, for Docker's sake
+    address: "0.0.0.0"
+    port: 8080
+  services:
+    - name: wikipedia
+      domain: wikipedia.org
+      lb-strategy: random
+      hosts:
+        - address: "en.wikipedia.org"
+          port: 80
+        - address: "ro.wikipedia.org"
+          port: 80
+    - name: round
+      domain: robots.txt
+      # lb-strategy: round-robin
+      hosts:
+        - address: "www.google.com"
+          port: 80
+        - address: "duckduckgo.com"
+          port: 80
+        - address: "silviancretu.ro"
+          port: 80

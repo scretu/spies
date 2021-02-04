@@ -1,0 +1,6 @@
+apiVersion: v2
+name: spies-helm-chart
+description: A Helm chart for deploying spies on Kubernetes
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
