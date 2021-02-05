@@ -14,7 +14,8 @@ You can run it via a Docker container
 
 You can run it on minikube
 
-### Running the Python application
+<details>
+  <summary>Running the Python application</summary>
 
 Requirements / Tested on
 
@@ -38,7 +39,10 @@ python ./proxy.py
 
 Press Ctrl + C to stop the process once you're done
 
-### Running the Docker container
+</details>
+
+<details>
+  <summary>Running the Docker container</summary>
 
 Requirements / Tested on
 
@@ -58,7 +62,10 @@ docker run -it --rm --name spies -p 127.0.0.1:8080:8080 spies:latest
 
 Press Ctrl + C to stop the process once you're done
 
-### Running it in minikube
+</details>
+
+<details>
+  <summary>Running it on minikube</summary>
 
 Requirements / Tested on
 
@@ -81,6 +88,8 @@ docker build -t spies:`grep tag spies-helm-chart/values.yaml | awk '{print $2}'`
 helm upgrade --install spies spies-helm-chart-`grep version spies-helm-chart/Chart.yaml | awk '{print $2}'`.tgz
 minikube service spies
 ```
+
+</details>
 
 ## Sample requests
 
