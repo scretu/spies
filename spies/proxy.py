@@ -42,7 +42,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                             service['active_host'] = 0
                         index_of_host = service['active_host']
                     url = 'http://{}:{}{}'.format(
-                            service['hosts'][index_of_host]['address'], service['hosts'][index_of_host]['port'], self.path)
+                        service['hosts'][index_of_host]['address'], service['hosts'][index_of_host]['port'], self.path)
                     print('Proxying to "{}" via strategy "{}"'.format(
                         url, lb_strategy))
                     resp = requests.get(url, verify=False)
