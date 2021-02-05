@@ -2,7 +2,8 @@
 
 Simplest Proxy I've Ever Seen
 
-## How to run it?
+<details>
+  <summary>How to run it</summary>
 
 You can install it in Python virtual environment
 
@@ -13,6 +14,28 @@ You can run it via a Docker container
 ... or...
 
 You can run it on minikube
+
+</details>
+
+<details>
+  <summary>How to configure it</summary>
+
+The `proxy.yaml` is the configuration file. You have to restart the application in order for the configuration to take effect. Also, for Docker/minikube, you have to rebuild the Docker image and redeploy the helm chart in order for the configuation to take effect.
+
+### The `listen` section
+
+This is where you'd specify the interface and TCP port to listen on. You could use `127.0.0.1` as address, but that's complicated to be exposed from Docker containers
+
+### The `services` section
+
+This is a list with the following items
+
+- `name`: give your service a name
+- `domain`: set a domain name for your service. When proxying, spies will identify the service by mapping the `Host` header value to this `domain`. If the `Host` header is not found in this list, the proxy will return `404, 'please use one of the domains in the config file'`
+- `lb-strategy`: this is an optional field. The default value is `random`, but `round-robin` can also be set as a load balacing strategy between the `hosts`
+- `hosts`: list of hosts/origins to balance between and proxy to. For each host, specify an `address` and a TCP `port`. No SSL verification is done while proxying to SSL
+
+</details>
 
 <details>
   <summary>Running the Python application</summary>
@@ -91,7 +114,8 @@ minikube service spies
 
 </details>
 
-## Sample requests
+<details>
+  <summary>Sample requests</summary>
 
 In the below examples, you may want to replace "127.0.0.1:8080" with the specific IP:Port on which the proxy is exposed (for example, what `minikube service spies` returns)
 
@@ -99,4 +123,7 @@ In the below examples, you may want to replace "127.0.0.1:8080" with the specifi
 curl -H "Host:wikipedia.org" http://127.0.0.1:8080/wiki/Tesla_Model_X
 curl -H "Host:robots.txt" http://127.0.0.1:8080/robots.txt
 curl -H "Host:this-must-fail.com" http://127.0.0.1:8080/bla
+curl -H "Host:the.one" http://127.0.0.1:8080/robots.txt
 ```
+
+</details>

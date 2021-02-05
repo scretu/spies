@@ -33,10 +33,16 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                     if lb_strategy == 'random':
                         no_of_hosts = len(service['hosts'])
                         index_of_host = random.randint(0, no_of_hosts-1)
-                        url = 'http://{}:{}{}'.format(
-                            service['hosts'][index_of_host]['address'], service['hosts'][index_of_host]['port'], self.path)
                     elif lb_strategy == 'round-robin':
-                        print('now this is something different')
+                        if 'active_host' in service:
+                            service['active_host'] += 1
+                            if service['active_host'] >= len(service['hosts']):
+                                service['active_host'] = 0
+                        else:
+                            service['active_host'] = 0
+                        index_of_host = service['active_host']
+                    url = 'http://{}:{}{}'.format(
+                            service['hosts'][index_of_host]['address'], service['hosts'][index_of_host]['port'], self.path)
                     print('Proxying to "{}" via strategy "{}"'.format(
                         url, lb_strategy))
                     resp = requests.get(url, verify=False)
