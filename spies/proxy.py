@@ -57,6 +57,8 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     if body:
                         self.wfile.write(resp.content)
+                    # once I've sent the request and returned the response, I can safely exit the for loop
+                    break
             if not service_found:
                 self.send_error(
                     404, 'please use one of the domains in the config file')
