@@ -3,6 +3,7 @@ proxy:
     # preferably listen on all interfaces, for Docker's sake
     address: "0.0.0.0"
     port: 8080
+  cache_valid: 60
   services:
     - name: wikipedia
       domain: wikipedia.org

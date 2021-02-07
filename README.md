@@ -41,6 +41,15 @@ This is a list with the following items
 - `lb-strategy`: this is an optional field. The default value is `random`, but `round-robin` can also be set as a load balacing strategy between the `hosts`
 - `hosts`: list of hosts/origins to balance between and proxy to. For each host, specify an `address` and a TCP `port`. No SSL verification is done while proxying to SSL
 
+#### The `cache_valid` Section
+
+This is a positive integer that enables caching for that many seconds:
+
+- `0`: no caching
+- `60`: caching based on URL of the downstream/origin for `60` seconds
+
+See the `Known Issues and Limitations` section!
+
 </details>
 
 <details>
@@ -202,8 +211,20 @@ The latency of the operation is calculated as the difference between the UNIX ti
 - Only these HTTP methods are supported
 
   - HEAD
-
   - GET
 
 - You have to restart the application if you've changed the configuration file; In case of Docker, you need to rebuild the image and restart the container if you've changed the configuration file; In case of Kubernetes, you also have to repackage the Helm chart and re-deploy it in case you've changed the configuration file
+
+- A very basic caching mechanism has been implemented
+
+  - the cache is in memory so this might mean some OOM killer interventions :)
+  - each cache key is valid for 60 seconds by default, though; see the `How to Configure It` section
+  - spies doesn't serve STALE cache; should the cache be EXPIRED, it will immediately proxy the request to the downstream/origin
+  - speaking of STALE, EXPIRED and other X-Cache-Status response headers... spies doesn't provide them
+  - the cache key is the URL of the downsteam/origin ( in the format `http://address:port/uri` )
+  - I implemented a logic to serve HTTP 304 (so, no response body) to clients that already had a HTTP 200 + body at a previous request
+  - I think the above logic causes issues with TCP connections in CLOSE_WAIT status
+    - this is easily reproducible with a browser like Chrome
+    - this is not easily reproducible with curl
+
 </details>
