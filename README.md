@@ -13,7 +13,7 @@ You can run it via a Docker container
 
 ... or...
 
-You can run it on minikube
+You can run it on minikube (by installing it via Helm or an Operator and a CRD)
 
 </details>
 
