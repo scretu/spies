@@ -28,11 +28,11 @@ You can run it on minikube (by installing it via Helm or an Operator and a CRD)
 
 The `proxy.yaml` is the configuration file. You have to restart the application in order for the configuration to take effect. Also, for Docker/minikube, you have to rebuild the Docker image and redeploy the helm chart in order for the configuation to take effect.
 
-### The `listen` Section
+#### The `listen` Section
 
 This is where you'd specify the interface and TCP port to listen on. You could use `127.0.0.1` as address, but that's complicated to be exposed from Docker containers
 
-### The `services` Section
+#### The `services` Section
 
 This is a list with the following items
 
