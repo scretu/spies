@@ -56,13 +56,10 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                     self.end_headers()
                     if body:
                         self.wfile.write(resp.content)
-                        self.wfile.close()
-                    return
             if not service_found:
                 self.send_error(
                     404, 'please use one of the domains in the config file')
         finally:
-            self.finish()
             if not sent:
                 self.send_error(404, 'error trying to proxy')
 
