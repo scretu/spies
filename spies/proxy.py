@@ -10,7 +10,6 @@ import yaml
 
 
 class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
-    # TODO: your server must then include an accurate Content-Length header (using send_header()) in all of its responses to clients
     protocol_version = 'HTTP/1.1'
 
     def do_HEAD(self):
@@ -28,6 +27,7 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                 # if there's another load balancing strategy defined for this service, we'll use it
                 if 'lb-strategy' in service:
                     lb_strategy = service['lb-strategy']
+                # let's find where to proxy (to which downstream service)
                 if host_header == service['domain']:
                     service_found = True
                     if lb_strategy == 'random':
@@ -49,10 +49,8 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                     sent = True
 
                     self.send_response(resp.status_code)
-                    # self.send_resp_headers(resp)
                     self.send_header("Content-Type", self.error_content_type)
                     self.send_header('Content-Length', len(resp.content))
-                    # self.send_header('Connection', 'close')
                     self.end_headers()
                     if body:
                         self.wfile.write(resp.content)
