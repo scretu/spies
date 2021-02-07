@@ -182,9 +182,28 @@ curl -H "Host:the.one" http://127.0.0.1:8080/robots.txt
 </details>
 
 <details>
+  <summary>SLI Metrics</summary>
+
+#### Latency
+
+Upon each request, the latency is calculated by the use of the [time()](https://docs.python.org/3/library/time.html#time.time) method.
+
+After the request is processed and the response is sent back to the requester, the proxy will report the latency of this whole operation and calculate the average of all latencies so far.
+
+The latency of the operation is calculated as the difference between the UNIX timestamp from the end of the method and the UNIX timestamp at the beginning of the method.
+
+</details>
+
+<details>
   <summary>Known Issues and Limitations</summary>
 
 - The biggest limitation is that... this proxy is not nginx... nor envoy, or HAproxy or Apache HTTPD... This is just for fun and/or academic purposes
+
+- Only these HTTP methods are supported
+
+  - HEAD
+
+  - GET
 
 - You have to restart the application if you've changed the configuration file; In case of Docker, you need to rebuild the image and restart the container if you've changed the configuration file; In case of Kubernetes, you also have to repackage the Helm chart and re-deploy it in case you've changed the configuration file
 </details>

@@ -7,6 +7,7 @@ import random
 import sys
 import requests
 import yaml
+import time
 
 
 class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
@@ -16,6 +17,8 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         self.do_GET(body=False)
 
     def do_GET(self, body=True):
+        # we'll use start to store the time when we entered this routine, to calculate latency
+        start = time.time()
         sent = False
         try:
             host_header = self.headers.get('Host')
@@ -58,6 +61,18 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                 self.send_error(
                     404, 'please use one of the domains in the config file')
         finally:
+            # we'll use finish to store the time when we exited this routine, to calculate latency
+            finish = time.time()
+            sli_latency['last_request'] = finish - start
+            if sli_latency['average'] == -1:
+                # this is the first request ever
+                sli_latency['average'] = sli_latency['last_request']
+            else:
+                # this is not the first request, so let's recalculate the average latency
+                sli_latency['average'] = (
+                    sli_latency['average'] + sli_latency['last_request'])/2
+            print('Latency statistics (in seconds with 18 decimals)\nlast request / average: {} / {}'.format(
+                sli_latency['last_request'], sli_latency['average']))
             if not sent:
                 self.send_error(404, 'error trying to proxy')
 
@@ -75,6 +90,13 @@ def main(argv=sys.argv[1:]):
         args['proxy']['listen']['address'], args['proxy']['listen']['port']))
     server_address = (args['proxy']['listen']['address'],
                       args['proxy']['listen']['port'])
+    # we'll use sli_latency to calculate and store the latency
+    # sli = service level indicator
+    # sli_latency is a dictionary holding
+    #   the latency of the last request and
+    #   the average latency of all requests since the server was started
+    global sli_latency
+    sli_latency = {'last_request': -1, 'average': -1}
     httpd = HTTPServer(server_address, ProxyHTTPRequestHandler)
     print('http server is running as reverse proxy')
     httpd.serve_forever()
