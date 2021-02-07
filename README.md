@@ -154,7 +154,6 @@ kubectl get all
 
 ```sh
 cd spies-operator
-make deploy IMG=spies:$IMG_TAG
 kubectl apply -f config/samples/charts_v1alpha1_spies.yaml
 kubectl get all
 minikube service spies
