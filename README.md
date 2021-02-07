@@ -1,9 +1,15 @@
 # spies
 
-Simplest Proxy I've Ever Seen
+## Simplest Proxy I've Ever Seen
+
+This is a simple HTTP 1.1 reverse proxy that supports multiple downstream services with multiple instances. The downstream services are identified using the `Host` HTTP header.
+
+The requests are load-balanced randomly or via a round-robin strategy.
+
+The response from the downstream service is sent back to the reverse proxy.
 
 <details>
-  <summary>How to run it</summary>
+  <summary>How to Run It</summary>
 
 You can install it in Python virtual environment
 
