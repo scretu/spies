@@ -144,9 +144,6 @@ You may note that the Docker image must be rebuilt with the docker binary provid
 
 ```sh
 cd spies-operator
-#minikube addons enable olm
-#kubectl apply -f config/rbac/role.yaml
-#kubectl apply -f config/rbac/role_binding.yaml
 export OPERATOR_IMG=spies-operator:$IMG_TAG
 make docker-build IMG=$OPERATOR_IMG
 make deploy IMG=$OPERATOR_IMG
