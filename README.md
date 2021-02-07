@@ -71,16 +71,17 @@ Requirements / Tested on
 
 - docker 19
 
-#### Preparing the Container
+#### Building the Docker Image
 
 ```sh
-docker build -t spies:latest .
+export IMG_TAG=`grep tag spies-helm-chart/values.yaml | awk '{print $2}'`
+docker build -t spies:$IMG_TAG .
 ```
 
-#### Starting the Application
+#### Starting the Docker Container
 
 ```sh
-docker run -it --rm --name spies -p 127.0.0.1:8080:8080 spies:latest
+docker run -it --rm --name spies -p 127.0.0.1:8080:8080 spies:$IMG_TAG
 ```
 
 Press Ctrl + C to stop the process once you're done
@@ -88,13 +89,14 @@ Press Ctrl + C to stop the process once you're done
 </details>
 
 <details>
-  <summary>Running it on Minikube</summary>
+  <summary>Running it on Minikube as a Helm Chart</summary>
 
 Requirements / Tested on
 
 - minikube 1.17
 - kubectl 1.20
 - kubernetes 1.20
+- helm 3.5
 
 #### Preparing the Helm Chart
 
@@ -102,13 +104,62 @@ Requirements / Tested on
 helm dependency update ./spies-helm-chart && helm package --version `grep version spies-helm-chart/Chart.yaml | awk '{print $2}'` ./spies-helm-chart
 ```
 
-#### Running it on Minikube
+#### Running it on Minikube as a Helm Chart
 
 ```sh
 minikube start
 eval $(minikube docker-env)
-docker build -t spies:`grep tag spies-helm-chart/values.yaml | awk '{print $2}'` .
+docker build -t spies:$IMG_TAG .
 helm upgrade --install spies spies-helm-chart-`grep version spies-helm-chart/Chart.yaml | awk '{print $2}'`.tgz
+minikube service spies
+kubectl get all
+```
+
+You may note that the Docker image must be rebuilt with the docker binary provided by minikube, so that minikube can fetch the image
+
+</details>
+
+<details>
+  <summary>Running it on Minikube as an Operator</summary>
+
+Requirements / Tested on
+
+- minikube 1.17
+- kubectl 1.20
+- kubernetes 1.20
+- helm 3.5
+- operator-sdk 1.4
+
+#### Building the Docker Image
+
+```sh
+eval $(minikube docker-env)
+export IMG_TAG=`grep tag spies-helm-chart/values.yaml | awk '{print $2}'`
+docker build -t spies:$IMG_TAG .
+```
+
+You may note that the Docker image must be rebuilt with the docker binary provided by minikube, so that minikube can fetch the image
+
+#### Deploying the Operator
+
+```sh
+cd spies-operator
+#minikube addons enable olm
+#kubectl apply -f config/rbac/role.yaml
+#kubectl apply -f config/rbac/role_binding.yaml
+export OPERATOR_IMG=spies-operator:$IMG_TAG
+make docker-build IMG=$OPERATOR_IMG
+make deploy IMG=$OPERATOR_IMG
+kubectl get all
+```
+
+#### Deploy the Proxy CRD
+
+```sh
+cd spies-operator
+make deploy IMG=spies:$IMG_TAG
+kubectl apply -f config/samples/charts_v1alpha1_spies.yaml
+kubectl get all
 minikube service spies
 ```
 
@@ -134,6 +185,4 @@ curl -H "Host:the.one" http://127.0.0.1:8080/robots.txt
 - The biggest limitation is that... this proxy is not nginx... nor envoy, or HAproxy or Apache HTTPD... This is just for fun and/or academic purposes
 
 - You have to restart the application if you've changed the configuration file; In case of Docker, you need to rebuild the image and restart the container if you've changed the configuration file; In case of Kubernetes, you also have to repackage the Helm chart and re-deploy it in case you've changed the configuration file
-
-- You might see exception in the logs while doing requests
 </details>

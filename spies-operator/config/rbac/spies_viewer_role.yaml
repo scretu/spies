@@ -1,0 +1,20 @@
+# permissions for end users to view spies.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: spies-viewer-role
+rules:
+- apiGroups:
+  - charts.my.domain
+  resources:
+  - spies
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - charts.my.domain
+  resources:
+  - spies/status
+  verbs:
+  - get

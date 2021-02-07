@@ -1,0 +1,14 @@
+apiVersion: charts.my.domain/v1alpha1
+kind: spies
+metadata:
+  name: spies-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/spies-helm-chart/values.yaml
+  fullnameOverride: spies
+  image:
+    pullPolicy: Never
+    repository: spies
+    tag: 0.0.1
+  imagePullSecrets: []
+  nameOverride: spies
+  replicaCount: 1
