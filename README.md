@@ -2,7 +2,7 @@
 
 ## Simplest Proxy I've Ever Seen
 
-This is a simple HTTP 1.1 reverse proxy that supports multiple downstream services with multiple instances. The downstream services are identified using the `Host` HTTP header.
+This is a simple HTTP 1.1 reverse proxy written in Python 3 that supports multiple downstream services with multiple instances. The downstream services are identified using the `Host` HTTP header.
 
 The requests are load-balanced randomly or via a round-robin strategy.
 
