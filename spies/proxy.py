@@ -60,9 +60,9 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
                         if time.time() - cache[cache_key][3] < cache_validity:
                             if cache[cache_key][2] == hash(client_address):
                                 # we've met before, so you'll get a 304 response with no body
-                                print('"{}", you get a "304 response" for "{}"'.format(
+                                print('"{}", you get a "304 error" for "{}"'.format(
                                     client_address, url))
-                                self.send_response(304)
+                                self.send_error(304)
                                 self.send_header(
                                     "Content-Type", self.error_content_type)
                                 self.end_headers()

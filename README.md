@@ -223,8 +223,5 @@ The latency of the operation is calculated as the difference between the UNIX ti
   - speaking of STALE, EXPIRED and other X-Cache-Status response headers... spies doesn't provide them
   - the cache key is the URL of the downsteam/origin ( in the format `http://address:port/uri` )
   - I implemented a logic to serve HTTP 304 (so, no response body) to clients that already had a HTTP 200 + body at a previous request
-  - I think the above logic causes issues with TCP connections in CLOSE_WAIT status
-    - this is easily reproducible with a browser like Chrome
-    - this is not easily reproducible with curl
 
 </details>
